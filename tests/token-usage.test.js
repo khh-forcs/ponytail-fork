@@ -35,4 +35,9 @@ test('dedupes repeated message ids, folds subagents into the session, applies --
   assert.equal(Math.round(sh.units), 820);
   assert.equal(label(sh), '코드·답변 작성형');
   assert.equal(collect(root).find((x) => x.output).output, 1069); // no --days: old entry counted
+
+  // a single project folder as root: same session, subagents still folded in
+  const [p] = collect(proj, Date.now() - 864e5);
+  assert.equal(p.project, '-home-me-app');
+  assert.equal(p.output, 70);
 });

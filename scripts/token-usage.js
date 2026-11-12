@@ -28,7 +28,9 @@ function collect(root, sinceMs = 0) {
   const sessions = new Map();
   for (const file of jsonlFiles(root)) {
     // <프로젝트>/<세션>.jsonl 과 <프로젝트>/<세션>/subagents/*.jsonl 을 같은 세션으로 묶는다.
-    const [project, sessionPart] = path.relative(root, file).split(path.sep);
+    // 기록 폴더로 프로젝트 폴더 하나를 주면 <세션>.jsonl 이 바로 아래에 있다.
+    const parts = path.relative(root, file).split(path.sep);
+    const [project, sessionPart] = parts[0].endsWith('.jsonl') || parts[1] === 'subagents' ? [path.basename(root), parts[0]] : parts;
     const key = project + '/' + sessionPart.replace(/\.jsonl$/, '');
     const s = sessions.get(key) || { project, prompt: '', last: '', seen: new Set(), input: 0, write: 0, weightedWrite: 0, cacheRead: 0, output: 0 };
     sessions.set(key, s);
